@@ -47,6 +47,8 @@ public:
   ~CDecoder();
 };
 
+#ifndef EXTRACT_ONLY
+
 struct CEncProps
 {
   UInt32 MemSizeMB;
@@ -81,6 +83,8 @@ public:
   CEncoder();
   ~CEncoder();
 };
+
+#endif
 
 }}
 

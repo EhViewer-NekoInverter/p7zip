@@ -124,6 +124,8 @@ STDMETHODIMP CDecoder::Code(ISequentialInStream *inStream, ISequentialOutStream 
 
 // ---------- Encoder ----------
 
+#ifndef EXTRACT_ONLY
+
 void CEncProps::Normalize(int level)
 {
   if (level < 0) level = 5;
@@ -255,5 +257,7 @@ STDMETHODIMP CEncoder::Code(ISequentialInStream *inStream, ISequentialOutStream 
     }
   }
 }
+
+#endif
 
 }}

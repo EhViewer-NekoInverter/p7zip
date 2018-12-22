@@ -17,23 +17,31 @@ namespace NZip {
 
 class CHandler:
   public IInArchive,
+  #ifndef EXTRACT_ONLY
   public IOutArchive,
   public ISetProperties,
+  #endif
   PUBLIC_ISetCompressCodecsInfo
   public CMyUnknownImp
 {
 public:
   MY_QUERYINTERFACE_BEGIN2(IInArchive)
+  #ifndef EXTRACT_ONLY
   MY_QUERYINTERFACE_ENTRY(IOutArchive)
   MY_QUERYINTERFACE_ENTRY(ISetProperties)
+  #endif
   QUERY_ENTRY_ISetCompressCodecsInfo
   MY_QUERYINTERFACE_END
   MY_ADDREF_RELEASE
 
   INTERFACE_IInArchive(;)
+  #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
+  #endif
 
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
 
   DECL_ISetCompressCodecsInfo
 
