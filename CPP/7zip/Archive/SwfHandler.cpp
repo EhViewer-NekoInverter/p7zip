@@ -20,12 +20,18 @@
 
 #include "../Compress/CopyCoder.h"
 #include "../Compress/LzmaDecoder.h"
+#ifndef EXTRACT_ONLY
 #include "../Compress/LzmaEncoder.h"
+#endif
 #include "../Compress/ZlibDecoder.h"
+#ifndef EXTRACT_ONLY
 #include "../Compress/ZlibEncoder.h"
+#endif
 
 #include "Common/DummyOutStream.h"
+#ifndef EXTRACT_ONLY
 #include "Common/HandlerOut.h"
+#endif
 
 using namespace NWindows;
 
@@ -151,8 +157,10 @@ struct CItem
 class CHandler:
   public IInArchive,
   public IArchiveOpenSeq,
+  #ifndef EXTRACT_ONLY
   public IOutArchive,
   public ISetProperties,
+  #endif
   public CMyUnknownImp
 {
   CItem _item;
@@ -161,16 +169,22 @@ class CHandler:
   CMyComPtr<ISequentialInStream> _seqStream;
   CMyComPtr<IInStream> _stream;
 
+  #ifndef EXTRACT_ONLY
   CSingleMethodProps _props;
+  #endif
   bool _lzmaMode;
 
 public:
   CHandler(): _lzmaMode(false) {}
   MY_UNKNOWN_IMP4(IInArchive, IArchiveOpenSeq, IOutArchive, ISetProperties)
   INTERFACE_IInArchive(;)
+  #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
+  #endif
   STDMETHOD(OpenSeq)(ISequentialInStream *stream);
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
 };
 
 static const Byte kProps[] =
@@ -415,6 +429,8 @@ STDMETHODIMP CHandler::Extract(const UInt32 *indices, UInt32 numItems,
   COM_TRY_END
 }
 
+#ifndef EXTRACT_ONLY
+
 static HRESULT UpdateArchive(ISequentialOutStream *outStream, UInt64 size,
     bool lzmaMode, const CSingleMethodProps &props,
     IArchiveUpdateCallback *updateCallback)
@@ -575,6 +591,8 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
     return E_INVALIDARG;
   return S_OK;
 }
+
+#endif
 
 static const Byte k_Signature[] = {
     3, 'C', 'W', 'S',

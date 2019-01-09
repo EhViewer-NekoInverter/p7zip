@@ -13,7 +13,11 @@
 #include "../Compress/CopyCoder.h"
 
 #include "Common/DummyOutStream.h"
+#ifndef EXTRACT_ONLY
 #include "Common/HandlerOut.h"
+#else
+#include "../../Windows/PropVariant.h"
+#endif
 
 using namespace NWindows;
 
@@ -23,8 +27,10 @@ namespace NBz2 {
 class CHandler:
   public IInArchive,
   public IArchiveOpenSeq,
+  #ifndef EXTRACT_ONLY
   public IOutArchive,
   public ISetProperties,
+  #endif
   public CMyUnknownImp
 {
   CMyComPtr<IInStream> _stream;
@@ -45,18 +51,30 @@ class CHandler:
   UInt64 _numStreams;
   UInt64 _numBlocks;
 
+  #ifndef EXTRACT_ONLY
   CSingleMethodProps _props;
+  #endif
 
 public:
+  #ifndef EXTRACT_ONLY
   MY_UNKNOWN_IMP4(
       IInArchive,
       IArchiveOpenSeq,
       IOutArchive,
       ISetProperties)
+  #else
+  MY_UNKNOWN_IMP2(
+      IInArchive,
+      IArchiveOpenSeq)
+  #endif
   INTERFACE_IInArchive(;)
+  #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
+  #endif
   STDMETHOD(OpenSeq)(ISequentialInStream *stream);
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
 
   CHandler() { }
 };
@@ -339,6 +357,8 @@ STDMETHODIMP CHandler::Extract(const UInt32 *indices, UInt32 numItems,
   COM_TRY_END
 }
 
+#ifndef EXTRACT_ONLY
+
 static HRESULT UpdateArchive(
     UInt64 unpackSize,
     ISequentialOutStream *outStream,
@@ -430,6 +450,8 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
 {
   return _props.SetProperties(names, values, numProps);
 }
+
+#endif
 
 static const Byte k_Signature[] = { 'B', 'Z', 'h' };
 

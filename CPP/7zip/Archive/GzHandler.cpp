@@ -19,9 +19,13 @@
 
 #include "../Compress/CopyCoder.h"
 #include "../Compress/DeflateDecoder.h"
+#ifndef EXTRACT_ONLY
 #include "../Compress/DeflateEncoder.h"
+#endif
 
+#ifndef EXTRACT_ONLY
 #include "Common/HandlerOut.h"
+#endif
 #include "Common/InStreamWithCRC.h"
 #include "Common/OutStreamWithCRC.h"
 
@@ -449,8 +453,10 @@ HRESULT CItem::WriteFooter(ISequentialOutStream *stream)
 class CHandler:
   public IInArchive,
   public IArchiveOpenSeq,
+  #ifndef EXTRACT_ONLY
   public IOutArchive,
   public ISetProperties,
+  #endif
   public CMyUnknownImp
 {
   CItem _item;
@@ -473,7 +479,9 @@ class CHandler:
   CMyComPtr<ICompressCoder> _decoder;
   NDecoder::CCOMCoder *_decoderSpec;
 
+  #ifndef EXTRACT_ONLY
   CSingleMethodProps _props;
+  #endif
 
 public:
   MY_UNKNOWN_IMP4(
@@ -482,9 +490,13 @@ public:
       IOutArchive,
       ISetProperties)
   INTERFACE_IInArchive(;)
+  #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
+  #endif
   STDMETHOD(OpenSeq)(ISequentialInStream *stream);
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
 
   CHandler()
   {
@@ -866,6 +878,8 @@ STDMETHODIMP CHandler::Extract(const UInt32 *indices, UInt32 numItems,
   COM_TRY_END
 }
 
+#ifndef EXTRACT_ONLY
+
 static const Byte kHostOS =
   #ifdef _WIN32
   NHostOS::kFAT;
@@ -1031,6 +1045,8 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
 {
   return _props.SetProperties(names, values, numProps);
 }
+
+#endif
 
 static const Byte k_Signature[] = { kSignature_0, kSignature_1, kSignature_2 };
 

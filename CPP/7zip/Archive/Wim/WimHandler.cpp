@@ -1203,6 +1203,8 @@ CHandler::CHandler()
   _xmlError = false;
 }
 
+#ifndef EXTRACT_ONLY
+
 STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps)
 {
   InitDefaults();
@@ -1238,6 +1240,8 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
   }
   return S_OK;
 }
+
+#endif
 
 STDMETHODIMP CHandler::KeepModeForNextOpen()
 {

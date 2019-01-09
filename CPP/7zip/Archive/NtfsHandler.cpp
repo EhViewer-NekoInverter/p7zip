@@ -2045,20 +2045,31 @@ class CHandler:
   public IInArchive,
   public IArchiveGetRawProps,
   public IInArchiveGetStream,
+  #ifndef EXTRACT_ONLY
   public ISetProperties,
+  #endif
   public CMyUnknownImp,
   CDatabase
 {
 public:
+  #ifndef EXTRACT_ONLY
   MY_UNKNOWN_IMP4(
       IInArchive,
       IArchiveGetRawProps,
       IInArchiveGetStream,
       ISetProperties)
+  #else
+  MY_UNKNOWN_IMP3(
+      IInArchive,
+      IArchiveGetRawProps,
+      IInArchiveGetStream)
+  #endif
   INTERFACE_IInArchive(;)
   INTERFACE_IArchiveGetRawProps(;)
   STDMETHOD(GetStream)(UInt32 index, ISequentialInStream **stream);
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
 };
 
 STDMETHODIMP CHandler::GetNumRawProps(UInt32 *numProps)
@@ -2715,6 +2726,8 @@ STDMETHODIMP CHandler::GetNumberOfItems(UInt32 *numItems)
   return S_OK;
 }
 
+#ifndef EXTRACT_ONLY
+
 STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps)
 {
   InitProps();
@@ -2741,6 +2754,8 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
   }
   return S_OK;
 }
+
+#endif
 
 static const Byte k_Signature[] = { 'N', 'T', 'F', 'S', ' ', ' ', ' ', ' ', 0 };
 

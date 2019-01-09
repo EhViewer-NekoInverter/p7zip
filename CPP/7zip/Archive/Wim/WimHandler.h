@@ -17,8 +17,10 @@ class CHandler:
   public IArchiveGetRawProps,
   public IArchiveGetRootProps,
   public IArchiveKeepModeForNextOpen,
+  #ifndef EXTRACT_ONLY
   public ISetProperties,
   public IOutArchive,
+  #endif
   public CMyUnknownImp
 {
   CDatabase _db;
@@ -83,6 +85,7 @@ class CHandler:
   HRESULT        GetTime(IArchiveUpdateCallback *callback, UInt32 callbackIndex, Int32 arcIndex, PROPID propID, FILETIME &ft);
 public:
   CHandler();
+  #ifndef EXTRACT_ONLY
   MY_UNKNOWN_IMP6(
       IInArchive,
       IArchiveGetRawProps,
@@ -90,12 +93,23 @@ public:
       IArchiveKeepModeForNextOpen,
       ISetProperties,
       IOutArchive)
+  #else
+  MY_UNKNOWN_IMP4(
+      IInArchive,
+      IArchiveGetRawProps,
+      IArchiveGetRootProps,
+      IArchiveKeepModeForNextOpen)
+  #endif
   INTERFACE_IInArchive(;)
   INTERFACE_IArchiveGetRawProps(;)
   INTERFACE_IArchiveGetRootProps(;)
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
   STDMETHOD(KeepModeForNextOpen)();
+  #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
+  #endif
 };
 
 }}

@@ -642,6 +642,8 @@ void CHandler::Init()
   _thereIsPaxExtendedHeader = false;
 }
 
+#ifndef EXTRACT_ONLY
+
 STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps)
 {
   Init();
@@ -673,5 +675,7 @@ STDMETHODIMP CHandler::SetProperties(const wchar_t * const *names, const PROPVAR
   }
   return S_OK;
 }
+
+#endif
 
 }}

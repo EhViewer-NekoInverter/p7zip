@@ -20,8 +20,10 @@ class CHandler:
   public IInArchive,
   public IArchiveOpenSeq,
   public IInArchiveGetStream,
+  #ifndef EXTRACT_ONLY
   public ISetProperties,
   public IOutArchive,
+  #endif
   public CMyUnknownImp
 {
 public:
@@ -55,6 +57,7 @@ private:
   HRESULT SkipTo(UInt32 index);
   void TarStringToUnicode(const AString &s, NWindows::NCOM::CPropVariant &prop, bool toOs = false) const;
 public:
+  #ifndef EXTRACT_ONLY
   MY_UNKNOWN_IMP5(
     IInArchive,
     IArchiveOpenSeq,
@@ -62,12 +65,23 @@ public:
     ISetProperties,
     IOutArchive
   )
+  #else
+  MY_UNKNOWN_IMP3(
+      IInArchive,
+      IArchiveOpenSeq,
+      IInArchiveGetStream
+  )
+  #endif
 
   INTERFACE_IInArchive(;)
+  #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
+  #endif
   STDMETHOD(OpenSeq)(ISequentialInStream *stream);
   STDMETHOD(GetStream)(UInt32 index, ISequentialInStream **stream);
+  #ifndef EXTRACT_ONLY
   STDMETHOD(SetProperties)(const wchar_t * const *names, const PROPVARIANT *values, UInt32 numProps);
+  #endif
 
   void Init();
   CHandler();
