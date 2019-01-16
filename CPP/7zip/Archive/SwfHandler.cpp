@@ -176,7 +176,11 @@ class CHandler:
 
 public:
   CHandler(): _lzmaMode(false) {}
+  #ifndef EXTRACT_ONLY
   MY_UNKNOWN_IMP4(IInArchive, IArchiveOpenSeq, IOutArchive, ISetProperties)
+  #else
+  MY_UNKNOWN_IMP2(IInArchive, IArchiveOpenSeq)
+  #endif
   INTERFACE_IInArchive(;)
   #ifndef EXTRACT_ONLY
   INTERFACE_IOutArchive(;)
